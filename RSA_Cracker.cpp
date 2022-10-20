@@ -66,7 +66,7 @@ bool Get_Primes(int n, int &p, int &q) {
             }
         }
     }
-    cout << "Public key is not valid!" << endl;
+    cout << "Public key is not valid!";
     return is_valid;
 }
 
@@ -78,7 +78,7 @@ bool Public_Key_Validation(int e, int phi_n, int n) {
 
 int Char_Decrypt(int c, int base, int d, int n) {
     // cout << c << "(" << base << ")^" << d << " (mod " << n << ")\n";
-    if (d <= 1) return (c * base) % n;
+    if (d == 1) return (c * base) % n;
     else if (d % 2 == 0) {
         double base_sq = pow(static_cast<double>(base), 2.0);
         base = static_cast<int>(base_sq) % n;
@@ -106,7 +106,7 @@ bool RSA_Decrypt(int e, int n, int m) {
 
     // Test validity of public key again
     if (!Public_Key_Validation(e, phi_n, n)) {
-        cout << "Public key is not valid!" << endl;
+        cout << "Public key is not valid!";
         return false;
     }
 
