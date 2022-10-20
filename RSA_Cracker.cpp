@@ -44,7 +44,7 @@ char Decrypted_Char(int decrypted_int, int shift) {
 }
 
 bool Is_Prime(int number) {
-    if (number > 1) {
+    if (number > 3) {
         for (int i = 2; i < number; i++)
             if (number % i == 0) return false;
     }
