@@ -43,42 +43,45 @@ char Decrypted_Char(int decrypted_int, int shift) {
     return char_vals[decrypted_int];
 }
 
-bool Is_Prime(int number) {
-    if (number > 3) {
-        for (int i = 2; i < number; i++)
-            if (number % i == 0) return false;
-    }
-    return true;
-};
-
 bool Get_Primes(int n, int &p, int &q) {
+    auto Is_Prime = [] (int number) -> bool {
+        if (number > 3)
+            for (int i = 2; i < number; i++) 
+                if (number % i == 0) 
+                    return false;
+        return true;
+    };
+
     bool is_valid = false;
-    for (int i = 2; i < n; i++) {
-        if (n % i == 0) {
-            if (Is_Prime(i)) {
-                int maybe_q = n / i;
-                if (Is_Prime(maybe_q)) {
-                    p = i;
-                    q = maybe_q;
-                    is_valid = true;
-                    return is_valid;
-                }
-            }
+    for (int i = 2; i < n; i++)
+        if (n % i == 0 && Is_Prime(i) && Is_Prime(n / i)) {
+            p = i;
+            q = n / i;
+            is_valid = true;
+            return is_valid;
         }
-    }
+
     cout << "Public key is not valid!";
     return is_valid;
 }
 
+
+/* In order to be a valid public key, e must be 1 < e < phi_n
+and e must be coprime with both phi_n and n. If there is a 
+common divisor (i) between (e & phi_n) or (e & n) then this 
+implies that e is not coprime with phi_n or n */
+
 bool Public_Key_Validation(int e, int phi_n, int n) {
     for (int i = 2; i < phi_n; i++)
-        if (e % i == 0 && (phi_n % i == 0 || n % i == 0)) return false;
+        if (e % i == 0 && (phi_n % i == 0 || n % i == 0)) 
+            return false;
     return true;
 }
 
 int Char_Decrypt(int c, int base, int d, int n) {
     // cout << c << "(" << base << ")^" << d << " (mod " << n << ")\n";
-    if (d == 1) return (c * base) % n;
+    if (d == 1) 
+        return (c * base) % n;
     else if (d % 2 == 0) {
         double base_sq = pow(static_cast<double>(base), 2.0);
         base = static_cast<int>(base_sq) % n;
@@ -113,26 +116,18 @@ bool RSA_Decrypt(int e, int n, int m) {
     // Step 3: Solve for d
     d = 0;
     for (int i = 1; d == 0; i += phi_n)
-        if (i % e == 0) d = i / e;
+        if (i % e == 0) 
+            d = i / e;
     
     // Printing Values
-    /*
-    cout << "p: " << p << endl;
-    cout << "q: " << q << endl;
-    cout << "phi(n): " << phi_n << endl;
-    cout << "d: " << d << endl;
-    */
-
     cout << p << " " << q << " " << phi_n << " " << d << endl;
 
     // Take in encrypted message
-    // cout << endl << "Please input your encypted message" << endl;
     int secret_message[m];
     for (int i = 0; i < m; i++)
         cin >> secret_message[i];
 
     // Decrypt each char
-    // cout << endl << "Decrypting" << endl;
     int decrypted_message[m];
     for (int i = 0; i < m; i++)
         decrypted_message[i] = Char_Decrypt(1, secret_message[i], d, n);
@@ -149,7 +144,6 @@ bool RSA_Decrypt(int e, int n, int m) {
         decrypted_str[i] = Decrypted_Char(decrypted_message[i], shift);
 
     // Printing Decyphered Msg
-    // cout << endl;
     for (int i = 0; i < m; i++)
         cout << decrypted_str[i];
 
